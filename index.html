@@ -3,25 +3,399 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bienvenido al Bar</title>
+  <title>Menú Mejorado</title>
   <style>
     body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  word-wrap: break-word;
+}   
+@media (max-width: 600px) {
+  h1, h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .producto {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .producto span {
+    align-self: flex-end;
+    font-size: 16px;
+  }
+
+  .menu-inferior button {
+    font-size: 16px;
+  }
+}
+section {
+  padding: 15px;
+  margin: 0 auto;
+  max-width: 500px;
+}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
       background-color: #111;
       color: #fff;
-      font-family: sans-serif;
+    }
+    header {
+      background-color: #000;
+      padding: 20px;
       text-align: center;
-      padding: 2rem;
+      border-bottom: 3px solid #e0a80d;
     }
-    h1 {
-      font-size: 2.5rem;
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #e0a80d;
     }
-    p {
-      font-size: 1.2rem;
+    .menu-section {
+      max-width: 800px;
+      margin: 20px auto 40px;
+      padding: 0 15px;
     }
+    h2 {
+      color: #e0a80d;
+      border-bottom: 2px solid #e0a80d;
+      padding-bottom: 5px;
+      margin-top: 40px;
+      font-size: 1.8em;
+    }
+    dl.menu-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    dl.menu-list dt,
+    dl.menu-list dd {
+      display: inline-block;
+      margin: 0;
+      padding: 10px 0;
+      font-size: 1.1em;
+    }
+    dl.menu-list dt {
+      width: 70%;
+      font-weight: 600;
+    }
+    dl.menu-list dd {
+      width: 28%;
+      text-align: right;    
+      color: #e0a80d;
+      margin-left: 2%;
+    }
+    dl.menu-list dt, dl.menu-list dd {
+      vertical-align: middle;
+    }
+    /* Separador entre items */
+    dl.menu-list dt:not(:last-child) {
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      display: block;
+      width: 100%;
+    }
+   dl.menu-list dt:not(:last-child) {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+    /* Buscar y filtro */
+    #search-container {
+      max-width: 800px;
+      margin: 20px auto 0;
+      padding: 0 15px;
+      text-align: center;
+    }
+    #search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 15px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    #filter-select {
+      padding: 8px 12px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      background-color: #222;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      dl.menu-list dt,
+      dl.menu-list dd {
+        display: block;
+        width: 100%;
+        text-align: left;
+      }
+      dl.menu-list dd {
+        margin-left: 0;
+        color: #e0a80d;
+        padding-left: 10px;
+        font-size: 1em;
+        margin-bottom: 15px;
+      }
+      dl.menu-list dt:not(:last-child) {
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+    }
+    #scrollTopBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+  background-color: #e0a80d;
+  color: #111;
+  border: none;
+  padding: 12px 16px;
+  font-size: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none; /* oculto por defecto */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s;
+}
+
+#scrollTopBtn:hover {
+  background-color: #c08c0b;
+}
   </style>
 </head>
 <body>
-  <h1>¡Bienvenido a Nuestro Bar!</h1>
-  <p>Explorá el menú, promociones y más.</p>
+  <header>
+    <h1>Carta Siete Soles</h1>
+  </header>
+
+  <div id="search-container" role="search" aria-label="Buscar menú">
+    <input type="text" id="search-input" placeholder="Buscar comida, bebida o postre..." aria-label="Buscar en el menú" />
+    <select id="filter-select" aria-label="Filtrar por categoría">
+      <option value="all">Todas las categorías</option>
+      <option value="comidas">Comidas</option>
+      <option value="bebidas">Bebidas</option>
+      <option value="postres">Postres</option>
+    </select>
+  </div>
+
+  <section class="menu-section" id="menu-container" aria-live="polite">
+    <!-- Aquí irá el menú cargado dinámicamente -->
+  </section>
+
+  <script>
+    // Datos del menú con categoría
+    const menuItems = [
+      // Comidas
+      { id: 1, nombre: "Empanada Jamón y Queso", precio: 1200, categoria: "comidas" },
+      { id: 2, nombre: "Empanada Carne Salada", precio: 1200, categoria: "comidas" },
+      { id: 3, nombre: "Empanada Pollo", precio: 1300, categoria: "comidas" },
+      { id: 4, nombre: "Empanada Carne Dulce", precio: 1300, categoria: "comidas" },
+      { id: 5, nombre: "Tarta Jamón y Queso", precio: 2200, categoria: "comidas" },
+      { id: 6, nombre: "Tarta Verdura", precio: 2200, categoria: "comidas" },
+      { id: 7, nombre: "Tarta Pollo (porción)", precio: 2400, categoria: "comidas" },
+      { id: 8, nombre: "Miga Cocido y Queso", precio: 6000, categoria: "comidas" },
+      { id: 9, nombre: "Familiar Cocido y Queso", precio: 6000, categoria: "comidas" },
+      { id: 10, nombre: "Miga Crudo y Queso", precio: 8900, categoria: "comidas" },
+      { id: 11, nombre: "Tostado o Carlito", precio: 6500, categoria: "comidas" },
+      { id: 12, nombre: "½ Triple", precio: 4400, categoria: "comidas" },
+      { id: 13, nombre: "½ Tostado Triple Pollo", precio: 6500, categoria: "comidas" },
+      { id: 14, nombre: "½ Tostado Triple Lomo", precio: 8500, categoria: "comidas" },
+      { id: 15, nombre: "½ Gratinado Queso", precio: 3900, categoria: "comidas" },
+      { id: 16, nombre: "½ Gratinado Napolitano", precio: 4000, categoria: "comidas" },
+      { id: 17, nombre: "½ Gratinado Ananá/Palmito", precio: 4900, categoria: "comidas" },
+      { id: 18, nombre: "½ Gratinado Pollo", precio: 5900, categoria: "comidas" },
+      { id: 19, nombre: "½ Gratinado Carlito Especial", precio: 4900, categoria: "comidas" },
+      { id: 20, nombre: "Familiar Primavera", precio: 6200, categoria: "comidas" },
+      { id: 21, nombre: "Torpedo Primavera frío", precio: 6800, categoria: "comidas" },
+      { id: 22, nombre: "Torpedo Primavera caliente con papas fritas", precio: 7500, categoria: "comidas" },
+      { id: 23, nombre: "Hamburguesa Especial", precio: 5800, categoria: "comidas" },
+      { id: 24, nombre: "Torpedo Doble de Hamburguesa Especial", precio: 11500, categoria: "comidas" },
+      { id: 25, nombre: "Familiar Milanesa Especial", precio: 9000, categoria: "comidas" },
+      { id: 26, nombre: "Torpedo Milanesa Especial", precio: 9900, categoria: "comidas" },
+      { id: 27, nombre: "Familiar Lomo Especial", precio: 11000, categoria: "comidas" },
+      { id: 28, nombre: "Torpedo de Lomo Especial", precio: 11500, categoria: "comidas" },
+      { id: 29, nombre: "Pizza Muzza ½", precio: 5300, categoria: "comidas" },
+      { id: 30, nombre: "Pizza Muzza entera", precio: 10500, categoria: "comidas" },
+      { id: 31, nombre: "Pizza Doble Muzza ½", precio: 6000, categoria: "comidas" },
+      { id: 32, nombre: "Pizza Doble Muzza entera", precio: 11800, categoria: "comidas" },
+      { id: 33, nombre: "Pizza Napolitana ½", precio: 5700, categoria: "comidas" },
+      { id: 34, nombre: "Pizza Napolitana entera", precio: 11000, categoria: "comidas" },
+      { id: 35, nombre: "Pizza con Jamón ½", precio: 5900, categoria: "comidas" },
+      { id: 36, nombre: "Pizza con Jamón entera", precio: 11500, categoria: "comidas" },
+      { id: 37, nombre: "Pizza Especial ½", precio: 6200, categoria: "comidas" },
+      { id: 38, nombre: "Pizza Especial entera", precio: 12000, categoria: "comidas" },
+      { id: 39, nombre: "Pizza 4 Quesos ½", precio: 6700, categoria: "comidas" },
+      { id: 40, nombre: "Pizza 4 Quesos entera", precio: 13000, categoria: "comidas" },
+      { id: 41, nombre: "Pizza Cantimpalo ½", precio: 6700, categoria: "comidas" },
+      { id: 42, nombre: "Pizza Cantimpalo entera", precio: 13000, categoria: "comidas" },
+      { id: 43, nombre: "Pizza Roquefort ½", precio: 6700, categoria: "comidas" },
+      { id: 44, nombre: "Pizza Roquefort entera", precio: 13000, categoria: "comidas" },
+      { id: 45, nombre: "Pizza Ananá/Palmito ½", precio: 6700, categoria: "comidas" },
+      { id: 46, nombre: "Pizza Ananá/Palmito entera", precio: 13000, categoria: "comidas" },
+      { id: 47, nombre: "Pizza Pollo al Verdeo ½", precio: 7200, categoria: "comidas" },
+      { id: 48, nombre: "Pizza Pollo al Verdeo entera", precio: 14000, categoria: "comidas" },
+      { id: 49, nombre: "Papas Fritas chica", precio: 4000, categoria: "comidas" },
+      { id: 50, nombre: "Papas Fritas grande", precio: 4500, categoria: "comidas" },
+      { id: 51, nombre: "Papas con salchichas", precio: 6500, categoria: "comidas" },
+      { id: 52, nombre: "Papas con cheddar", precio: 5500, categoria: "comidas" },
+      { id: 53, nombre: "Papas al Puerro", precio: 5500, categoria: "comidas" },
+      { id: 54, nombre: "Puré de papas", precio: 4000, categoria: "comidas" },
+      { id: 55, nombre: "Tortilla chica", precio: 4400, categoria: "comidas" },
+      { id: 56, nombre: "Tortilla grande", precio: 5200, categoria: "comidas" },
+      { id: 57, nombre: "Omeletto pollo con fritas", precio: 5500, categoria: "comidas" },
+      { id: 58, nombre: "Ensalada chica hasta 3 gustos", precio: 2900, categoria: "comidas" },
+      { id: 59, nombre: "Ensalada grande hasta 5 gustos", precio: 3500, categoria: "comidas" },
+      { id: 60, nombre: "Ensalada especial chica", precio: 4200, categoria: "comidas" },
+      { id: 61, nombre: "Ensalada especial grande", precio: 5000, categoria: "comidas" },
+      { id: 62, nombre: "Milanesa de carne o pollo", precio: 8200, categoria: "comidas" },
+      { id: 63, nombre: "Milanesa gratinada", precio: 8900, categoria: "comidas" },
+      { id: 64, nombre: "Milanesa Napolitana", precio: 9500, categoria: "comidas" },
+      { id: 65, nombre: "Milanesa a los 4 quesos", precio: 9800, categoria: "comidas" },
+      { id: 66, nombre: "Milanesa con puré (+$300)", precio: 8500, categoria: "comidas" },
+      { id: 67, nombre: "Milanesa con puré calabaza (+$400)", precio: 8600, categoria: "comidas" },
+      { id: 68, nombre: "Ñoquis", precio: 5800, categoria: "comidas" },
+      { id: 69, nombre: "Tallarines", precio: 6000, categoria: "comidas" },
+      { id: 70, nombre: "Ravioles carne y verdura", precio: 6400, categoria: "comidas" },
+      { id: 71, nombre: "Canelones carne y verdura", precio: 6400, categoria: "comidas" },
+      { id: 72, nombre: "Sorrentinos (J y Q)", precio: 6400, categoria: "comidas" },
+      { id: 73, nombre: "Raviolón calabaza", precio: 6400, categoria: "comidas" },
+      { id: 74, nombre: "Boloñesa", precio: 1000, categoria: "comidas" },
+      { id: 75, nombre: "Estofado", precio: 1700, categoria: "comidas" },
+      { id: 76, nombre: "Lomo grillado a la plancha", precio: 8500, categoria: "comidas" },
+      { id: 77, nombre: "Lomo a la crema o mostaza", precio: 10500, categoria: "comidas" },
+      { id: 78, nombre: "Lomo al puerro o champiñón", precio: 11500, categoria: "comidas" },
+      { id: 79, nombre: "Lomo al roquefort", precio: 11500, categoria: "comidas" },
+      { id: 80, nombre: "Lomo especial siete soles", precio: 11500, categoria: "comidas" },
+      { id: 81, nombre: "Lomo a los 4 quesos", precio: 10500, categoria: "comidas" },
+      
+      // Bebidas
+      { id: 82, nombre: "Agua Mineral con gas o s/gas", precio: 1800, categoria: "bebidas" },
+      { id: 83, nombre: "Agua Mineral 1500cc", precio: 2400, categoria: "bebidas" },
+      { id: 84, nombre: "Agua Saborizada 1500cc", precio: 4000, categoria: "bebidas" },
+      { id: 85, nombre: "Gaseosa Lata", precio: 2000, categoria: "bebidas" },
+      { id: 86, nombre: "Gaseosa 500cc", precio: 2400, categoria: "bebidas" },
+      { id: 87, nombre: "Gaseosa 1500cc", precio: 5500, categoria: "bebidas" },
+      { id: 88, nombre: "Jugo Baggio ch", precio: 800, categoria: "bebidas" },
+      { id: 89, nombre: "Jugo Baggio Litro", precio: 2200, categoria: "bebidas" },
+      { id: 90, nombre: "Jugo Baggio 1,5", precio: 2900, categoria: "bebidas" },
+      { id: 91, nombre: "Gatorade", precio: 2800, categoria: "bebidas" },
+
+      // Postres
+      { id: 92, nombre: "Budín de pan / Flan casero", precio: 2200, categoria: "postres" },
+      { id: 93, nombre: "Ensalada de fruta chica", precio: 2200, categoria: "postres" },
+      { id: 94, nombre: "Ensalada de fruta grande", precio: 2800, categoria: "postres" },
+      { id: 95, nombre: "Queso y dulce", precio: 2000, categoria: "postres" },
+      { id: 96, nombre: "Adicional dulce de leche", precio: 200, categoria: "postres" },
+      { id: 97, nombre: "Adicional crema", precio: 300, categoria: "postres" },
+    ];
+
+    const menuContainer = document.getElementById("menu-container");
+    const searchInput = document.getElementById("search-input");
+    const filterSelect = document.getElementById("filter-select");
+
+    function renderMenu(filter = "all", search = "") {
+      menuContainer.innerHTML = ""; // limpio
+
+      // Agrupo por categoría
+      const categories = {
+        comidas: [],
+        bebidas: [],
+        postres: [],
+      };
+
+      // filtro por categoría y búsqueda (case insensitive)
+      const searchLower = search.toLowerCase();
+      menuItems.forEach(item => {
+        const matchesCategory = filter === "all" || item.categoria === filter;
+        const matchesSearch = item.nombre.toLowerCase().includes(searchLower);
+        if (matchesCategory && matchesSearch) {
+          categories[item.categoria].push(item);
+        }
+      });
+
+      // Función para crear sección por categoría
+      function createSection(title, items) {
+        if (items.length === 0) return; // no muestro si no hay items
+
+        const section = document.createElement("section");
+        section.classList.add("menu-section");
+
+        const h2 = document.createElement("h2");
+        h2.textContent = title;
+        section.appendChild(h2);
+
+        const dl = document.createElement("dl");
+        dl.classList.add("menu-list");
+
+        items.forEach(({ nombre, precio }) => {
+          // dt para nombre
+          const dt = document.createElement("dt");
+          dt.textContent = nombre;
+          dt.setAttribute("aria-label", `Nombre del platillo: ${nombre}`);
+
+          // dd para precio
+          const dd = document.createElement("dd");
+          dd.textContent = `$${precio.toLocaleString("es-AR")}`;
+          dd.setAttribute("aria-label", `Precio: $${precio.toLocaleString("es-AR")}`);
+
+          dl.appendChild(dt);
+          dl.appendChild(dd);
+        });
+
+        section.appendChild(dl);
+        menuContainer.appendChild(section);
+      }
+
+      createSection("Comidas", categories.comidas);
+      createSection("Bebidas", categories.bebidas);
+      createSection("Postres", categories.postres);
+    }
+
+    // Eventos de búsqueda y filtro
+    searchInput.addEventListener("input", () => {
+      renderMenu(filterSelect.value, searchInput.value);
+    });
+
+    filterSelect.addEventListener("change", () => {
+      renderMenu(filterSelect.value, searchInput.value);
+    });
+
+    // Render inicial
+    renderMenu();
+    
+  </script>
+  <button id="scrollTopBtn" title="Volver arriba">↑</button>
 </body>
+<script>
+  // Mostrar/ocultar botón según scroll
+  const scrollBtn = document.getElementById("scrollTopBtn");
+
+  window.onscroll = function() {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+      scrollBtn.style.display = "block";
+    } else {
+      scrollBtn.style.display = "none";
+    }
+  };
+
+  // Función para volver arriba
+  scrollBtn.onclick = function() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+</script>
 </html>
